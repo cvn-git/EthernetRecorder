@@ -35,6 +35,9 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include "layer2_rx.h"
+#include "packet_recorder.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -116,6 +119,8 @@ int appMain(void *args)
     DebugP_log("==========================\r\n");
     DebugP_log("  CPSW LWIP UDP SERVER    \r\n");
     DebugP_log("==========================\r\n");
+
+    initPacketRecorder();
 
     EnetApp_getEnetInstInfo(&enetType, &instId);
 
@@ -228,7 +233,7 @@ static void App_setupNetif()
 #endif
 
          /* Open the netif and get it populated*/
-         LwipifEnetApp_netifOpen(NETIF_INST_ID0 + i, &ipaddr, &netmask, &gw);
+         custom_LwipifEnetApp_netifOpen(NETIF_INST_ID0 + i, &ipaddr, &netmask, &gw);
          g_pNetif[NETIF_INST_ID0 + i] = LwipifEnetApp_getNetifFromId(NETIF_INST_ID0 + i);
          netif_set_status_callback(g_pNetif[NETIF_INST_ID0 + i], App_netifStatusChangeCb);
          netif_set_link_callback(g_pNetif[NETIF_INST_ID0 + i], App_netifLinkChangeCb);
