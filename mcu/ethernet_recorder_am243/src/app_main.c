@@ -137,10 +137,13 @@ int appMain(void *args)
 
     App_setupNetworkStack();
 
-    while (false == App_isNetworkUp(netif_default))
+    for (uint32_t i = 0U; i < ENET_SYSCFG_NETIF_COUNT; i++)
     {
-        DebugP_log("Waiting for network UP ...\r\n");
-        ClockP_sleep(2);
+        while (false == App_isNetworkUp(g_pNetif[NETIF_INST_ID0 + i]))
+        {
+            DebugP_log("Waiting for network #%u UP ...\r\n", i + 1);
+            ClockP_sleep(2);
+        }
     }
 
     DebugP_log("Network is UP ...\r\n");
@@ -226,7 +229,7 @@ static void App_setupNetif()
 
          /* Open the netif and get it populated*/
          LwipifEnetApp_netifOpen(NETIF_INST_ID0 + i, &ipaddr, &netmask, &gw);
-         g_pNetif[NETIF_INST_ID0 + i] = LwipifEnetApp_getNetifFromId(NETIF_INST_ID0);
+         g_pNetif[NETIF_INST_ID0 + i] = LwipifEnetApp_getNetifFromId(NETIF_INST_ID0 + i);
          netif_set_status_callback(g_pNetif[NETIF_INST_ID0 + i], App_netifStatusChangeCb);
          netif_set_link_callback(g_pNetif[NETIF_INST_ID0 + i], App_netifLinkChangeCb);
          netif_set_up(g_pNetif[NETIF_INST_ID0 + i]);
