@@ -2,7 +2,6 @@
 #include "packet_recorder.h"
 
 #include <enet_apputils.h>
-
 #include <ti_enet_lwipif.h>
 
 

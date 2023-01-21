@@ -33,25 +33,12 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include "FreeRTOS.h"
-#include "task.h"
-/* lwIP core includes */
-#include "lwip/opt.h"
-/* SDK includes */
+#include "app_cpswconfighandler.h"
+
 #include <networking/enet/utils/include/enet_apputils.h>
-#include <networking/enet/utils/include/enet_board.h>
-#include <enet.h>
-#include <kernel/dpl/TaskP.h>
-#include <kernel/dpl/ClockP.h>
-#include <kernel/dpl/QueueP.h>
+
 #include "ti_board_config.h"
-#include "ti_board_open_close.h"
-#include "ti_drivers_open_close.h"
-#include "ti_enet_config.h"
-#include "ti_enet_open_close.h"
+
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -64,7 +51,6 @@
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
-
 
 static void EnetApp_mdioLinkStatusChange(Cpsw_MdioLinkStateChangeInfo *info,
                                          void *appArg);

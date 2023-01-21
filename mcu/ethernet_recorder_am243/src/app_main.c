@@ -35,33 +35,33 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include "app_config.h"
 #include "layer2_rx.h"
 #include "packet_recorder.h"
-
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include "FreeRTOS.h"
-#include "task.h"
-/* lwIP core includes */
-#include "lwip/opt.h"
-#include "lwip/sys.h"
-#include "lwip/tcpip.h"
-#include "lwip/dhcp.h"
-
-#include <kernel/dpl/TaskP.h>
-#include <kernel/dpl/ClockP.h>
-#include <kernel/dpl/ClockP.h>
-#include <networking/enet/utils/include/enet_apputils.h>
-#include <networking/enet/utils/include/enet_board.h>
-#include "ti_board_config.h"
-#include "ti_board_open_close.h"
-#include "ti_drivers_open_close.h"
-#include "ti_enet_config.h"
-#include "ti_enet_open_close.h"
+#include "usb_comm.h"
 #include "app_cpswconfighandler.h"
 #include "app_udpserver.h"
+
+// Enet
+#include <networking/enet/utils/include/enet_apputils.h>
+#include <networking/enet/core/include/per/cpsw.h>
+
+// syscfg generated
+#include "ti_board_open_close.h"
+#include "ti_drivers_open_close.h"
+#include "ti_enet_open_close.h"
 #include "ti_enet_lwipif.h"
+
+// Kernel
+#include <kernel/dpl/TaskP.h>
+
+// LwIP
+#include "lwip/dhcp.h"
+
+// FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
+
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -70,6 +70,11 @@
 #define USE_STATIC_ADDRESSES
 
 static const uint8_t BROADCAST_MAC_ADDRESS[ENET_MAC_ADDR_LEN] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+// Background task
+TaskHandle_t    taskBackground = NULL;
+StackType_t     taskBackgroundStackBuffer[TASK_BACKGROUND_STACK_SIZE_WORDS];
+StaticTask_t    taskBackgroundBuffer;
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -96,8 +101,6 @@ static void App_netifLinkChangeCb(struct netif *state_netif);
 
 static inline int32_t App_isNetworkUp(struct netif* netif_);
 
-int cdc_echo_main(void);
-
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -109,6 +112,33 @@ struct netif *g_pNetif[ENET_SYSCFG_NETIF_COUNT];
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
+
+void taskBacgroundLoop(void *args)
+{
+    while (1)
+    {
+        vTaskDelay(1);  // Short nap to avoid holding CPU
+
+        App_printCpuLoad();
+    }
+}
+
+void createTaskBackGround()
+{
+    taskBackground = xTaskCreateStatic (
+            taskBacgroundLoop,
+            "taskBackground",                    // task name
+            TASK_BACKGROUND_STACK_SIZE_WORDS,
+            NULL,                               // pvParameters
+            TASK_BACKGROUND_PRIORITY,
+            taskBackgroundStackBuffer,
+            &taskBackgroundBuffer);
+    if (taskBackground == NULL)
+    {
+        DebugP_logError("Cannot create background task\r\n");
+        return;
+    }
+}
 
 int appMain(void *args)
 {
@@ -122,9 +152,11 @@ int appMain(void *args)
     DebugP_log("  CPSW LWIP UDP SERVER    \r\n");
     DebugP_log("==========================\r\n");
 
-    cdc_echo_main();
+    initUsbComm();
 
     initPacketRecorder();
+
+    createTaskBackGround();
 
     EnetApp_getEnetInstInfo(&enetType, &instId);
 
@@ -159,13 +191,6 @@ int appMain(void *args)
     ClockP_sleep(1);
     AppUdp_startServer();
 
-    while (1)
-    {
-        ClockP_usleep(1000);
-        App_printCpuLoad();
-    }
-
-    App_shutdownNetworkStack();
     return 0;
 }
 

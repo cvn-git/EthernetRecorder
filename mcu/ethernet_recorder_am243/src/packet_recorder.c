@@ -1,16 +1,18 @@
 #include "packet_recorder.h"
+#include "app_config.h"
 
+// FreeRTOS
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
+
+// Standard C
 #include <string.h>
 
 
 #define MAX_PACKET_SIZE 1600U
 #define QUEUED_PACKETS 100U
 
-#define TASK_RECORDING_STACK_SIZE_WORDS 2048U
-#define TASK_RECORDING_PRIORITY 2
 
 typedef struct
 {
@@ -74,10 +76,10 @@ void packetRecordingTask(void *arg)
     {
         if (xQueueReceive(queueReadyEntries, &entryIdx, portMAX_DELAY) == pdTRUE)
         {
+#if 0
             const PacketRecord* entry = &queuedPackets[entryIdx];
-
-            //DebugP_log("Receive %u bytes from the interface %X\r\n", entry->numBytes, entry->netIf);
-
+            DebugP_log("Receive %u bytes from the interface %X\r\n", entry->numBytes, entry->netIf);
+#endif
             // Done. Return entryIdx to the free entry queue.
             if (xQueueSendToBack(queueFreeEntries, &entryIdx, 0) != pdTRUE)
             {
