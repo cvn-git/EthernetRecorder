@@ -8,7 +8,7 @@
  *   uses this stack.
  * - After vTaskStartScheduler() each task created in FreeRTOS has its own stack
  */
---stack_size=8192
+--stack_size=16384
 /* This is the heap size for malloc() API in NORTOS and FreeRTOS
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
@@ -103,6 +103,22 @@ SECTIONS
     .bss:ENET_DMA_OBJ_MEM (NOLOAD) {} ALIGN (128) > MSRAM
     .bss:ENET_DMA_PKT_INFO_MEMPOOL (NOLOAD) {} ALIGN (128) > MSRAM
     .bss:ENET_ICSSG_OCMC_MEM (NOLOAD) {} ALIGN (128) > MSRAM
+
+    /* Sections needed for C++ projects */
+    GROUP {
+        .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
+        .init_array: {} palign(8)   /* Contains function pointers called before main */
+        .fini_array: {} palign(8)   /* Contains function pointers called after main */
+    } > MSRAM
+
+    /* General purpose user shared memory, used in some examples */
+    .bss.user_shared_mem (NOLOAD) : {} > USER_SHM_MEM
+    /* this is used when Debug log's to shared memory are enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
+    /* this is used only when IPC RPMessage is enabled, else this is not used */
+    .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    /* General purpose non cacheable memory, used in some examples */
+    .bss.nocache (NOLOAD) : {} > NON_CACHE_MEM
 }
 
 /*
@@ -110,7 +126,7 @@ NOTE: Below memory is reserved for DMSC usage
  - During Boot till security handoff is complete
    0x701E0000 - 0x701FFFFF (128KB)
  - After "Security Handoff" is complete (i.e at run time)
-   0x701FC000 - 0x701FFFFF (16KB)
+   0x701F4000 - 0x701FFFFF (48KB)
 
  Security handoff is complete when this message is sent to the DMSC,
    TISCI_MSG_SEC_HANDOVER
@@ -125,10 +141,13 @@ MEMORY
     R5F_TCMA  : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
     R5F_TCMB0 : ORIGIN = 0x41010000 , LENGTH = 0x00008000
 
+    /* memory segment used to hold CPU specific non-cached data, MAKE to add a MPU entry to mark this as non-cached */
+    NON_CACHE_MEM : ORIGIN = 0x70060000 , LENGTH = 0x8000
+
     /* when using multi-core application's i.e more than one R5F/M4F active, make sure
      * this memory does not overlap with other R5F's
      */
-    MSRAM     : ORIGIN = 0x70080000 , LENGTH = 0x160000
+    MSRAM     : ORIGIN = 0x70080000 , LENGTH = 0x140000
 
     /* This section can be used to put XIP section of the application in flash, make sure this does not overlap with
      * other CPUs. Also make sure to add a MPU entry for this section and mark it as cached and code executable
@@ -136,4 +155,11 @@ MEMORY
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x100000
 
 
+    /* shared memory segments */
+    /* On R5F,
+     * - make sure there is a MPU entry which maps below regions as non-cache
+     */
+    USER_SHM_MEM            : ORIGIN = 0x701D0000, LENGTH = 0x180
+    LOG_SHM_MEM             : ORIGIN = 0x701D0000 + 0x180, LENGTH = 0x00004000 - 0x180
+    RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0x701D4000, LENGTH = 0x0000C000
 }

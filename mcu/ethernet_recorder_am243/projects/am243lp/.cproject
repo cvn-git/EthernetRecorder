@@ -37,9 +37,12 @@
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.ENDIAN_NESS__BIG_LITTLE.605557239" name="Endian-ness (big/little) [See 'General' page to edit]" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.ENDIAN_NESS__BIG_LITTLE" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.ENDIAN_NESS__BIG_LITTLE.MLITTLE_ENDIAN" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.INCLUDE_PATH.649584388" name="Add dir to #include search path (-I)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="${SYSCONFIG_TOOL_INCLUDE_PATH}"/>
+									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/usb/tinyusb/config/freertos/am64x_am243x"/>
+									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/usb/tinyusb/tinyusb-stack/src"/>
 									<listOptionValue builtIn="false" value="${COM_TI_MCU_PLUS_SDK_AM243X_INCLUDE_PATH}"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include/c"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source"/>
+									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/kernel/dpl"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am243x/r5f"/>
@@ -95,6 +98,7 @@
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/board/lib"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/networking/enet/lib"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/networking/lwip/lib"/>
+									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/usb/lib"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/lib"/>
 									<listOptionValue builtIn="false" value="${PROJECT_BUILD_DIR}/syscfg"/>
 								</option>
@@ -108,6 +112,7 @@
 									<listOptionValue builtIn="false" value="lwip-freertos.am243x.r5f.ti-arm-clang.debug.lib"/>
 									<listOptionValue builtIn="false" value="lwip-contrib-freertos.am243x.r5f.ti-arm-clang.debug.lib"/>
 									<listOptionValue builtIn="false" value="board.am243x.r5f.ti-arm-clang.debug.lib"/>
+									<listOptionValue builtIn="false" value="usb_device_freertos.am243x.r5f.ti-arm-clang.debug.lib"/>
 									<listOptionValue builtIn="false" value="libc.a"/>
 									<listOptionValue builtIn="false" value="libsysbm.a"/>
 								</option>
@@ -284,4 +289,5 @@
 		<project id="enet_cpsw_udpserver_am243x-lp_r5fss0-0_freertos_ti-arm-clang.com.ti.ccstudio.buildDefinitions.TMS470.ProjectType.192865112" name="TMS470" projectType="com.ti.ccstudio.buildDefinitions.TMS470.ProjectType"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 </cproject>

@@ -76,7 +76,7 @@ void packetRecordingTask(void *arg)
         {
             const PacketRecord* entry = &queuedPackets[entryIdx];
 
-            DebugP_log("Receive %u bytes from the interface %X\r\n", entry->numBytes, entry->netIf);
+            //DebugP_log("Receive %u bytes from the interface %X\r\n", entry->numBytes, entry->netIf);
 
             // Done. Return entryIdx to the free entry queue.
             if (xQueueSendToBack(queueFreeEntries, &entryIdx, 0) != pdTRUE)

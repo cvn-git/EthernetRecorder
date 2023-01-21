@@ -96,6 +96,8 @@ static void App_netifLinkChangeCb(struct netif *state_netif);
 
 static inline int32_t App_isNetworkUp(struct netif* netif_);
 
+int cdc_echo_main(void);
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -119,6 +121,8 @@ int appMain(void *args)
     DebugP_log("==========================\r\n");
     DebugP_log("  CPSW LWIP UDP SERVER    \r\n");
     DebugP_log("==========================\r\n");
+
+    cdc_echo_main();
 
     initPacketRecorder();
 
