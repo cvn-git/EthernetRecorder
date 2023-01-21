@@ -175,7 +175,6 @@ void tud_task_loop(void *args)
     while (1)
     {
         tud_task();
-        vTaskDelay(1);  // Short nap to avoid holding CPU
     }
 }
 
