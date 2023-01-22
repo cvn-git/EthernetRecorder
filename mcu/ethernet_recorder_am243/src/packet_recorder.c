@@ -1,5 +1,6 @@
 #include "packet_recorder.h"
 #include "app_config.h"
+#include "usb_comm.h"
 
 // FreeRTOS
 #include <FreeRTOS.h>
@@ -51,7 +52,7 @@ void recordPacket(struct pbuf *p, struct netif *inp)
     // This function is called from a task with very small stack. Be mindful of stack overflow here.
 
     uint32_t entryIdx = 0;
-    if (xQueueReceive(queueFreeEntries, &entryIdx, portMAX_DELAY) != pdTRUE)
+    if (xQueueReceive(queueFreeEntries, &entryIdx, 0) != pdTRUE)
     {
         return;
     }
@@ -76,10 +77,12 @@ void packetRecordingTask(void *arg)
     {
         if (xQueueReceive(queueReadyEntries, &entryIdx, portMAX_DELAY) == pdTRUE)
         {
-#if 0
             const PacketRecord* entry = &queuedPackets[entryIdx];
-            DebugP_log("Receive %u bytes from the interface %X\r\n", entry->numBytes, entry->netIf);
-#endif
+            //DebugP_log("Receive %u bytes from the interface %X\r\n", entry->numBytes, entry->netIf);
+
+            // Write to USB
+            writeUsb(&entry->packetData[0], entry->numBytes, portMAX_DELAY);
+
             // Done. Return entryIdx to the free entry queue.
             if (xQueueSendToBack(queueFreeEntries, &entryIdx, 0) != pdTRUE)
             {

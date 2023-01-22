@@ -15,6 +15,8 @@ static err_t  custom_tcpip_input(struct pbuf *p, struct netif *inp)
 
 void custom_LwipifEnetApp_netifOpen(uint32_t netifIdx, const ip4_addr_t *ipaddr, const ip4_addr_t *netmask, const ip4_addr_t *gw)
 {
+    // Reimplement LwipifEnetApp_netifOpen() to tap into Ethernet Rx
+
     struct netif * const netIf = LwipifEnetApp_getNetifFromId(netifIdx);
 
     if(netifIdx < ENET_SYSCFG_NETIF_COUNT)
