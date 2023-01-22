@@ -36,3 +36,6 @@
 /**/.launches/
 /**/Debug/
 *.rprc
+
+# Qt stuffs
+/**/build*/

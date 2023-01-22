@@ -33,6 +33,10 @@
 	</linkedResources>
 	<variableList>
 		<variable>
+			<name>CODEBASE_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+		<variable>
 			<name>MCU_PLUS_SDK_PATH</name>
 			<value>$%7BCOM_TI_MCU_PLUS_SDK_AM243X_INSTALL_DIR%7D</value>
 		</variable>

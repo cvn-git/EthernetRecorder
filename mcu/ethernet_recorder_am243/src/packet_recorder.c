@@ -1,6 +1,12 @@
 #include "packet_recorder.h"
 #include "app_config.h"
 #include "usb_comm.h"
+#include "eth_rec_common.h"
+
+#include "ti_enet_lwipif.h"
+
+// Kernel
+#include <kernel/dpl/ClockP.h>
 
 // FreeRTOS
 #include <FreeRTOS.h>
@@ -11,8 +17,8 @@
 #include <string.h>
 
 
-#define MAX_PACKET_SIZE 1600U
-#define QUEUED_PACKETS 100U
+#define MAX_PACKET_SIZE (1600U)
+#define QUEUED_PACKETS (100U)
 
 
 typedef struct
@@ -20,11 +26,12 @@ typedef struct
     uint64_t        timestamp;
     struct netif*   netIf;
     uint32_t        numBytes;
-    uint8_t         packetData[MAX_PACKET_SIZE];
+    uint8_t         packetData[ETH_REC_HEADER_BYTES + MAX_PACKET_SIZE];
 } PacketRecord;
 
 
 PacketRecord queuedPackets[QUEUED_PACKETS];
+EthRecHeader msgHeader;
 
 // Queue of free entries in queuedPackets
 QueueHandle_t   queueFreeEntries = NULL;
@@ -50,6 +57,17 @@ void recordPacket(struct pbuf *p, struct netif *inp)
     }
 
     // This function is called from a task with very small stack. Be mindful of stack overflow here.
+    msgHeader.timestamp = ClockP_getTimeUsec();
+    msgHeader.syncWord = ETH_REC_SYNC_WORD;
+    msgHeader.numBytes = p->len;
+    msgHeader.networkInterface = 0;
+    for (uint32_t i = 0U; i < ENET_SYSCFG_NETIF_COUNT; i++)
+    {
+        if (inp == LwipifEnetApp_getNetifFromId(NETIF_INST_ID0 + i))
+        {
+            msgHeader.networkInterface = i;
+        }
+    }
 
     uint32_t entryIdx = 0;
     if (xQueueReceive(queueFreeEntries, &entryIdx, 0) != pdTRUE)
@@ -59,8 +77,9 @@ void recordPacket(struct pbuf *p, struct netif *inp)
     PacketRecord* entry = &queuedPackets[entryIdx];
 
     entry->netIf = inp;
-    entry->numBytes = p->len;
-    memcpy(entry->packetData, p->payload, p->len);
+    entry->numBytes = sizeof(msgHeader) + p->len;
+    memcpy(&entry->packetData[0], &msgHeader, sizeof(msgHeader));
+    memcpy(&entry->packetData[sizeof(msgHeader)], p->payload, p->len);
 
     if (xQueueSendToBack(queueReadyEntries, &entryIdx, 0) != pdTRUE)
     {
@@ -96,6 +115,12 @@ void packetRecordingTask(void *arg)
 
 void initPacketRecorder()
 {
+    if (sizeof(EthRecHeader) != ETH_REC_HEADER_BYTES)
+    {
+        DebugP_logError("Invalid message header size\r\n");
+        return;
+    }
+
     // Create recording task
     taskRecording = xTaskCreateStatic (
             packetRecordingTask,

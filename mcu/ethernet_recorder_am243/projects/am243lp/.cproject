@@ -37,6 +37,8 @@
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.ENDIAN_NESS__BIG_LITTLE.605557239" name="Endian-ness (big/little) [See 'General' page to edit]" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.ENDIAN_NESS__BIG_LITTLE" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.ENDIAN_NESS__BIG_LITTLE.MLITTLE_ENDIAN" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.INCLUDE_PATH.649584388" name="Add dir to #include search path (-I)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="${SYSCONFIG_TOOL_INCLUDE_PATH}"/>
+									<listOptionValue builtIn="false" value="${CODEBASE_ROOT}\ext\json\single_include"/>
+									<listOptionValue builtIn="false" value="${CODEBASE_ROOT}/common"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/usb/tinyusb/config/freertos/am64x_am243x"/>
 									<listOptionValue builtIn="false" value="${MCU_PLUS_SDK_PATH}/source/usb/tinyusb/tinyusb-stack/src"/>
 									<listOptionValue builtIn="false" value="${COM_TI_MCU_PLUS_SDK_AM243X_INCLUDE_PATH}"/>
@@ -76,6 +78,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.WALL.2109248729" name="Enable most warning messages (-Wall)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.WALL" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.WNO.1208175288_" name="Disable specified category of warning diagnostics (-Wno-)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compilerID.WNO_" useByScannerDiscovery="false" valueType="stringList">
 									<listOptionValue builtIn="false" value="gnu-variable-sized-type-not-at-end"/>
+									<listOptionValue builtIn="false" value="ti-macros"/>
 									<listOptionValue builtIn="false" value="unused-function"/>
 								</option>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compiler.inputType__C_SRCS.2144876328" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.TMS470_TICLANG_2.1.compiler.inputType__C_SRCS"/>
