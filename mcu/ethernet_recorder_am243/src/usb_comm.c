@@ -197,7 +197,7 @@ uint32_t writeUsb(const void* data, uint32_t numBytes, TickType_t ticksToWait)
         if (bytesToWrite < MIN_FREE_TX_BYTES)
         {
             // Wait until Tx FIFO has more space
-            if (xSemaphoreTake(mutexCdc, ticksToWait) != pdTRUE)
+            if (xSemaphoreTake(semaphoreCdc, ticksToWait) != pdTRUE)
             {
                 break;
             }
