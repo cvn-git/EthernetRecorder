@@ -149,7 +149,7 @@ int appMain(void *args)
     Board_driversOpen();
 
     DebugP_log("==========================\r\n");
-    DebugP_log("  CPSW LWIP UDP SERVER    \r\n");
+    DebugP_log(" Ethernet packet recorder, build on " __DATE__ "\r\n");
     DebugP_log("==========================\r\n");
 
     initUsbComm();
